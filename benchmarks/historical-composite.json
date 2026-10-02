@@ -1,0 +1,62 @@
+{
+  "status": "historical-local-composite-not-canonical",
+  "date": "2026-10-02",
+  "machine": {
+    "chip": "M5 Max",
+    "gpu_cores": 40,
+    "memory_gib": 128
+  },
+  "engine_version": "26.10.1",
+  "model": "iQ 4.7bpw trunk/head with independently quantized community ngram table",
+  "protocol": {
+    "tool": "llmprobe 0.6.7 with PR427 thinking-off patch",
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 20,
+    "output_tokens": 192,
+    "repeats": 3,
+    "prefix_cache_entries": 0,
+    "thinking": false,
+    "prefill": "prompt tokens / TTFT",
+    "decode": "client delivery, corrected for first content frame"
+  },
+  "rows": [
+    {
+      "target_tokens": 2048,
+      "prefill_tok_s": 1764,
+      "decode_tok_s": 100.2
+    },
+    {
+      "target_tokens": 4096,
+      "prefill_tok_s": 1959,
+      "decode_tok_s": 97.8
+    },
+    {
+      "target_tokens": 8192,
+      "prefill_tok_s": 2063,
+      "decode_tok_s": 95.1
+    },
+    {
+      "target_tokens": 16384,
+      "prefill_tok_s": 2103,
+      "decode_tok_s": 99.7
+    },
+    {
+      "target_tokens": 32768,
+      "prefill_tok_s": 1927,
+      "decode_tok_s": 90.8
+    },
+    {
+      "target_tokens": 65536,
+      "prefill_tok_s": 1892,
+      "decode_tok_s": 92.8
+    },
+    {
+      "target_tokens": 131072,
+      "prefill_tok_s": 1943,
+      "decode_tok_s": 92.3
+    }
+  ],
+  "canonical_checkpoint_tested": false,
+  "source": "https://github.com/ddalcu/mlx-serve/pull/427"
+}

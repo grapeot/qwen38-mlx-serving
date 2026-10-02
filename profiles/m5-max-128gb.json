@@ -1,0 +1,24 @@
+{
+  "host": "127.0.0.1",
+  "port": 11234,
+  "context_window": 262144,
+  "minimum_memory_gib": 128,
+  "max_resident_mem": "96GB",
+  "prefix_cache_mem": "4GB",
+  "prefix_cache_entries": 4,
+  "args": [
+    "--mtp-depth",
+    "6",
+    "--reasoning-budget",
+    "0",
+    "--kv-quant",
+    "8",
+    "--mtp-head-kv-quant",
+    "--mtp-history-window",
+    "8192"
+  ],
+  "env": {
+    "MLX_SERVE_MTP_FORCE_DEPTH": "3",
+    "MLX_SERVE_MTP_DRAFT_GREEDY": "0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "version": "26.10.1",
+  "platform": "macos-arm64",
+  "url": "https://github.com/ddalcu/mlx-serve/releases/download/v26.10.1/mlx-serve-bin-macos-arm64.tar.gz",
+  "size": 76304537,
+  "sha256": "e53056e481364ff72188fafea8b3eb0aeb0b5b7cebcd6e6e7d26bf1ce4223873",
+  "archive_directory": "mlx-serve-macos-arm64",
+  "binary": "mlx-serve"
+}

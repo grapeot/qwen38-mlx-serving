@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qwen38-mlx-serving"
+version = "0.1.0"
+description = "Pinned model acquisition and local mlx-serve lifecycle wrapper"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = []
+
+[project.optional-dependencies]
+download = ["huggingface_hub==1.33.0", "hf-xet==1.6.0"]
+benchmark = ["tokenizers==0.23.2", "matplotlib==3.11.2"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+qwen38_serving = ["py.typed"]
