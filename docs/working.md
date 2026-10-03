@@ -21,6 +21,7 @@
 - 完成带硬件传感器同步采样的 64K、128K 同请求长上下文三轮复测（6/6 全部完成）：重启同配置独立服务，采用 64K/128K 交替运行、每请求后 45 秒空闲等待、冷前缀缓存 (cached_tokens == 0)、输出 192 tokens、T=1、关闭思考。服务配置、权重及系统风扇策略均未改动。复测结束后普通服务已恢复，健康检查通过；修正绘图标题，使其显示实际提示词协议。
 - 复测性能表现恢复：64K Client Decode 中位数达 97.5 tok/s（min 81.3, max 98.6），128K Decode 中位数达 100.6 tok/s（min 90.2, max 101.5），PP 吞吐分别达 2238.8 与 2114.7 tok/s。
 - 硬件遥测与归档：通过 `macmon` pipe 同步记录 GPU 频率/温度/功耗，本机 SMC 只读采样风扇转速。结果归档于 `benchmarks/canonical-long-retest.json`，新增包含历史基线、首轮完整重放与长上下文复测三条独立 series 的综合对照图 `benchmarks/canonical-comparison.png`（不拼接为单条曲线）。原始逐请求及遥测日志保存于 `~/.local/state/qwen38-serving/long-context-retest/RUN_ID/`，不向公开仓库提交私有传感器实现或日志。
+- 文档修正（2026-10-02）：校正 README 中关于单请求并发的不准确描述，澄清原生引擎 `mlx-serve v26.10.1` 的队列容量参数语义与运行时并发表现；在 `tuning.md` 中补充并发语义、源码指针及资源共享边界；在 `troubleshooting.md` 与 `AGENTS.md` 中补充置顶的模型路径排查指引（区分历史复合包与当前规范路径）。本次仅为文档校正，不包含任何代码、配置或服务运行状态变动。
 
 ## 2. 真实技术陷阱与教训
 
