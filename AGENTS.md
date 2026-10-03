@@ -11,7 +11,7 @@
 
 262144（262K）为主模型输入与输出共享的配置上限，当前实测覆盖至 128K，Vision 默认禁用。模型权重与运行时状态存放在 repo 外，模型文件不提交。DSH 本地 model ID 已更新为 `qwen38-flash-next-iq47`；服务包装器不设输出 token 上限，但客户端 SDK 仍可能隐式注入上限（如 32768）。
 
-保留旧服务和权重时，避免同时加载两份大模型。包装器遇到端口占用会退出，停止时校验 PID 归属。旧权重清理仅在用户授权后使用 `trash PATH`；不自动删除或清空 Trash。
+保留旧服务和权重时，避免同时加载两份大模型。包装器遇到端口占用会退出，停止时校验 PID 归属。旧权重清理仅在用户授权后使用 `trash PATH`；不自动删除或清空 Trash。排查与定位当前运行模型时，先使用 `status` 与 `doctor` 获取路径线索，再核验真实进程参数与文件存在性，切勿因历史实验路径缺失而误判或盲目重新下载，详见 [故障排查手册](docs/troubleshooting.md#1-模型路径与运行时状态核查-model-location--runtime-inspection)。
 
 公开文件不包含个人绝对路径、私有 DSH 全文、凭证、运行日志或权重。默认模型和状态目录均在 repo 外。修改源码后更新 `docs/working.md`；只有用户明确要求时才 commit 或 push。
 
@@ -73,7 +73,7 @@
 - **测试策略与冒烟用例**：[docs/test.md](docs/test.md)
 - **开发记录与踩坑经验 (Lessons Learned)**：[docs/working.md](docs/working.md)
 - **硬件调优与配置解析**：[docs/tuning.md](docs/tuning.md)
-- **故障排查与诊断手册**：[docs/troubleshooting.md](docs/troubleshooting.md)
+- **故障排查与诊断手册**：[docs/troubleshooting.md](docs/troubleshooting.md)（含模型路径与运行状态核查）
 - **模型规格与下载指南**：[docs/download.md](docs/download.md)
 - **性能基准与历史数据**：[docs/benchmark.md](docs/benchmark.md)
 - **AI 技能定义规范**：[skills/qwen38-serving/SKILL.md](skills/qwen38-serving/SKILL.md)
