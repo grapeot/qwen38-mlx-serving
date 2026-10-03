@@ -105,3 +105,15 @@ python3.12 scripts/qwen38.py start --cold-cache
 ```bash
 tail -f ~/.local/state/qwen38-serving/server.log
 ```
+
+
+### Python 转发器导致虚拟环境异常排障
+
+本机曾因 `python3.12` 转发器路径配置而在使用 `python3.12 -m venv .venv` 创建虚拟环境时出现 `pyvenv.cfg` 的 `home` 错误指向转发器目录，报错为标准库缺失（报错如 `/install/lib/python3.12` 及 `ModuleNotFoundError: encodings`）；缺少 ensurepip 也可能导致 pip 安装失败。本次显式指定真实解释器、用 `uv` 重建环境后，依赖安装与 19 项离线测试通过。推荐使用以下备用命令：
+
+```bash
+uv venv --allow-existing --python 3.12 .venv
+uv pip install --python .venv/bin/python -e '.[download,benchmark]'
+```
+
+若 `uv` 自动探测的解释器依然不正确，可在正常的 Python 环境中打印 `sys._base_executable`，再把该真实解释器的绝对路径显式传给 `--python`。此方法专门针对转发器路径配置偏差，无法断言能修复所有的 Python 环境损坏问题。

@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "tool": "qwen38-local-replay-of-captured-llmprobe-0.6.7-coding-requests",
+  "model": "qwen38-flash-next-iq47",
+  "repo": "ddalcu/Qwen3.8-Flash-Next-MLX-Serve-iQ-MLX-4.7bpw",
+  "revision": "dafff5c3d8168c9d13275661153911096499a80a",
+  "profile": {
+    "host": "127.0.0.1",
+    "port": 11234,
+    "context_window": 262144,
+    "minimum_memory_gib": 128,
+    "max_resident_mem": "96GB",
+    "prefix_cache_mem": "4GB",
+    "prefix_cache_entries": 4,
+    "args": [
+      "--mtp-depth",
+      "6",
+      "--reasoning-budget",
+      "0",
+      "--kv-quant",
+      "8",
+      "--mtp-head-kv-quant",
+      "--mtp-history-window",
+      "8192"
+    ],
+    "env": {
+      "MLX_SERVE_MTP_FORCE_DEPTH": "3",
+      "MLX_SERVE_MTP_DRAFT_GREEDY": "0"
+    }
+  },
+  "rows": [
+    {
+      "target_tokens": 2048,
+      "actual_prompt_tokens": [
+        2101,
+        2101,
+        2101
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 1764,
+      "historical_decode_tok_s": 100.2,
+      "client_prefill_tok_s": {
+        "median": 1298.4855894044615,
+        "min": 1248.6202070694749,
+        "max": 2077.7409882364977
+      },
+      "client_decode_tok_s": {
+        "median": 110.40494657553522,
+        "min": 90.4798172587212,
+        "max": 111.38151441812079
+      },
+      "server_prefill_tok_s": {
+        "median": 1303.5767419518243,
+        "min": 1251.3203335385117,
+        "max": 2081.546987967377
+      },
+      "server_decode_tok_s": {
+        "median": 112.8787780116933,
+        "min": 92.03100423490301,
+        "max": 113.91296590549157
+      }
+    },
+    {
+      "target_tokens": 4096,
+      "actual_prompt_tokens": [
+        4092,
+        4092,
+        4092
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 1959,
+      "historical_decode_tok_s": 97.8,
+      "client_prefill_tok_s": {
+        "median": 1778.61569953826,
+        "min": 1691.9270730985263,
+        "max": 1808.8179543696142
+      },
+      "client_decode_tok_s": {
+        "median": 111.140455768185,
+        "min": 109.89053264847799,
+        "max": 113.95872899283258
+      },
+      "server_prefill_tok_s": {
+        "median": 1782.6747277492689,
+        "min": 1698.1512907486108,
+        "max": 1812.8415033493209
+      },
+      "server_decode_tok_s": {
+        "median": 113.5810188379953,
+        "min": 112.33342515186669,
+        "max": 116.33741637774811
+      }
+    },
+    {
+      "target_tokens": 8192,
+      "actual_prompt_tokens": [
+        8255,
+        8255,
+        8255
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 2063,
+      "historical_decode_tok_s": 95.1,
+      "client_prefill_tok_s": {
+        "median": 2251.19773843888,
+        "min": 2156.9400558789307,
+        "max": 2274.2280534935207
+      },
+      "client_decode_tok_s": {
+        "median": 110.71425018102694,
+        "min": 98.54705723979143,
+        "max": 114.73024984782694
+      },
+      "server_prefill_tok_s": {
+        "median": 2256.740783090577,
+        "min": 2161.326058906245,
+        "max": 2279.1208158957206
+      },
+      "server_decode_tok_s": {
+        "median": 113.49949383363749,
+        "min": 101.0789185348976,
+        "max": 117.42038100840433
+      }
+    },
+    {
+      "target_tokens": 16384,
+      "actual_prompt_tokens": [
+        16293,
+        16293,
+        16293
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 2103,
+      "historical_decode_tok_s": 99.7,
+      "client_prefill_tok_s": {
+        "median": 2459.3107006852833,
+        "min": 2391.4103850227475,
+        "max": 2475.335349438774
+      },
+      "client_decode_tok_s": {
+        "median": 102.64328574354738,
+        "min": 95.14897982177025,
+        "max": 108.76365520855634
+      },
+      "server_prefill_tok_s": {
+        "median": 2463.3567246957896,
+        "min": 2396.5577706357844,
+        "max": 2480.4525412579424
+      },
+      "server_decode_tok_s": {
+        "median": 104.78149219617715,
+        "min": 96.9810051508189,
+        "max": 111.13053033523585
+      }
+    },
+    {
+      "target_tokens": 32768,
+      "actual_prompt_tokens": [
+        32885,
+        32885,
+        32885
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 1927,
+      "historical_decode_tok_s": 90.8,
+      "client_prefill_tok_s": {
+        "median": 2363.891604267272,
+        "min": 2345.7698875521937,
+        "max": 2367.7216501883136
+      },
+      "client_decode_tok_s": {
+        "median": 101.88106524351707,
+        "min": 91.88340481327108,
+        "max": 103.2901651244934
+      },
+      "server_prefill_tok_s": {
+        "median": 2366.2916236125734,
+        "min": 2348.5343043543776,
+        "max": 2370.61279953395
+      },
+      "server_decode_tok_s": {
+        "median": 104.17655744856786,
+        "min": 93.62117365368891,
+        "max": 106.01796178285161
+      }
+    },
+    {
+      "target_tokens": 65536,
+      "actual_prompt_tokens": [
+        65456,
+        65456,
+        65456
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 1892,
+      "historical_decode_tok_s": 92.8,
+      "client_prefill_tok_s": {
+        "median": 1305.0393041558534,
+        "min": 1188.0585567285952,
+        "max": 2125.077020385611
+      },
+      "client_decode_tok_s": {
+        "median": 56.10754214420956,
+        "min": 50.643726526371715,
+        "max": 94.7374853944468
+      },
+      "server_prefill_tok_s": {
+        "median": 1305.8925149349698,
+        "min": 1188.8069968952614,
+        "max": 2127.1425362419714
+      },
+      "server_decode_tok_s": {
+        "median": 57.3885968910584,
+        "min": 51.61086723258961,
+        "max": 96.83246287337467
+      }
+    },
+    {
+      "target_tokens": 131072,
+      "actual_prompt_tokens": [
+        131166,
+        131166,
+        131166
+      ],
+      "runs": 3,
+      "grounded_runs": 3,
+      "historical_prefill_tok_s": 1943,
+      "historical_decode_tok_s": 92.3,
+      "client_prefill_tok_s": {
+        "median": 1444.6294190972321,
+        "min": 1412.0738506161595,
+        "max": 1557.9372563714721
+      },
+      "client_decode_tok_s": {
+        "median": 76.17307269375777,
+        "min": 69.00409674404419,
+        "max": 80.43939762588482
+      },
+      "server_prefill_tok_s": {
+        "median": 1445.5155387338689,
+        "min": 1412.8816830742091,
+        "max": 1558.6599777156644
+      },
+      "server_decode_tok_s": {
+        "median": 78.02416919090479,
+        "min": 70.57304167067925,
+        "max": 82.22666224499658
+      }
+    }
+  ],
+  "protocol": {
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": "20 via generation_config",
+    "output_tokens": 192,
+    "thinking": false,
+    "prefix_cache_entries": 0,
+    "prompt": "captured llmprobe 0.6.7 withRetryBudget corpus and PR427 thinking-off patch",
+    "comparable_to_llmprobe": true,
+    "full_llmprobe_suite": false,
+    "historical_request_changes": [
+      "model ID only"
+    ]
+  }
+}

@@ -15,6 +15,7 @@ results/
 .runtime/
 .DS_Store
 *.part
+*.aria2
 *.safetensors
 *.bin
 *.gguf

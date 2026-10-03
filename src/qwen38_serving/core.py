@@ -165,10 +165,21 @@ def fetch(url: str, destination: Path, entry: dict) -> None:
             time.sleep(2 ** attempt)
 
 
-def download_plan(settings: Settings) -> dict:
+def download_plan(settings: Settings, transport: str = "hf") -> dict:
     manifest = settings.model_manifest
     command = ["hf", "download", manifest["repo"], "--revision", manifest["revision"], "--local-dir", str(settings.model)]
-    return {"repo": manifest["repo"], "revision": manifest["revision"], "files": len(manifest["files"]), "bytes": manifest["total_bytes"], "destination": str(settings.model), "hf_command": command, "network_used": False}
+    result = {"repo": manifest["repo"], "revision": manifest["revision"], "files": len(manifest["files"]), "bytes": manifest["total_bytes"], "destination": str(settings.model), "transport": transport, "network_used": False}
+    if transport == "hf":
+        result["hf_command"] = command
+    elif transport in ["http", "aria2"]:
+        result["source_url_template"] = f"https://huggingface.co/{manifest['repo']}/resolve/{manifest['revision']}/FILE"
+        result["parallel_files"] = 64 if transport == "aria2" else 4
+        if transport == "aria2":
+            result["input_file"] = str(settings.state / "downloads/aria2-input.txt")
+            result["segments"] = {"ordinary": 4, "above_4_gib": 16}
+    else:
+        raise ValueError(f"Unknown download transport: {transport}")
+    return result
 
 
 def download(settings: Settings, transport: str) -> dict:
@@ -188,13 +199,47 @@ def download(settings: Settings, transport: str) -> dict:
         env = os.environ.copy()
         env.update(HF_HOME=str(settings.data / "hf-cache"), HF_HUB_CACHE=str(settings.data / "hf-cache/hub"), HF_XET_CACHE=str(settings.data / "hf-cache/xet"), HF_XET_HIGH_PERFORMANCE="1")
         subprocess.run(command, env=env, check=True)
-    else:
+    elif transport == "aria2":
+        executable = shutil.which("aria2c")
+        if executable is None:
+            raise RuntimeError("aria2c unavailable; install aria2 or use hf/http transport")
+        directory = settings.state / "downloads"
+        directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+        lines = []
+        # Start the large embedding table early instead of leaving it until last.
+        for entry in sorted(manifest["files"], key=lambda item: -item["size"]):
+            path = settings.model / entry["path"]
+            if not path.with_name(path.name + ".aria2").exists() and check_file(path, entry):
+                continue
+            lines.extend([
+                f"https://huggingface.co/{manifest['repo']}/resolve/{manifest['revision']}/{entry['path']}",
+                f"  dir={settings.model}",
+                f"  out={entry['path']}",
+                "  split=16" if entry["size"] > 4 * 1024**3 else "  split=4",
+            ])
+            if "sha256" in entry:
+                lines.append(f"  checksum=sha-256={entry['sha256']}")
+        if lines:
+            inputs = directory / "aria2-input.txt"
+            inputs.write_text("\n".join(lines) + "\n")
+            command = [executable, "--input-file", str(inputs), "--continue=true",
+                       "--auto-file-renaming=false", "--allow-overwrite=false",
+                       "--max-concurrent-downloads=64", "--max-connection-per-server=16",
+                       "--min-split-size=8M", "--file-allocation=none", "--check-integrity=true",
+                       "--retry-wait=3", "--max-tries=5", "--summary-interval=60",
+                       "--show-console-readout=false",
+                       "--console-log-level=warn", "--download-result=hide",
+                       "--log-level=warn", "--log", str(directory / "aria2.log")]
+            subprocess.run(command, check=True)
+    elif transport == "http":
         def retrieve(entry):
             url = f"https://huggingface.co/{manifest['repo']}/resolve/{manifest['revision']}/{entry['path']}"
             fetch(url, settings.model / entry["path"], entry)
             print("Verified", entry["path"], flush=True)
         with ThreadPoolExecutor(max_workers=4) as executor:
             list(executor.map(retrieve, manifest["files"]))
+    else:
+        raise ValueError(f"Unknown download transport: {transport}")
     return verify(settings)
 
 

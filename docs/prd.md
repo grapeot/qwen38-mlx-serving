@@ -26,7 +26,7 @@
 
 - `doctor` 报告 Python、系统、架构、磁盘空间及可读取的内存参数，不自动修改系统设置。
 - `install-engine` 使用固定 release、大小和 SHA-256，保留二进制、动态库和许可文件。
-- `download` 默认调用 Hugging Face CLI，指定 revision 和独立缓存；另提供标准库 HTTP 续传。两种方式均在下载后独立校验全部文件。
+- `download` 默认调用 Hugging Face CLI，指定 revision 和独立缓存；另提供标准库 HTTP 续传与可选的 aria2 传输。三种传输方式均固定 revision 并在下载后独立校验全部文件（不同传输模式间不保证无损复用未完成分块）。
 - `install-engine --plan`、`download --plan` 不联网、不创建数据目录；逐文件清单见 `manifests/model.json`。
 - `verify` 检查 113 个文件的大小与哈希，写入 `.qwen38-verified.json`；启动时检查清单、文件大小和 mtime 是否仍与标记一致。
 - `start`、`stop`、`status` 管理受管进程，记录保存在 `server.json`；只发送 SIGTERM，最多等待 40 秒。
@@ -40,4 +40,4 @@
    - 仓库工作区保持干净，仅包含代码、脚本、文档与清单。
    - 权重与引擎二进制分别隔离在 `~/.local/share/qwen38-serving`。
    - 进程 PID、日志与运行时配置存放在 `~/.local/state/qwen38-serving`。
-3. **真实性与可信度**：所有基准测试数据必须明确来源。文档中保留的测试数据统一注明为 `HISTORICAL LOCAL COMPOSITE, canonical NOT tested`。
+3. **真实性与可信度**：所有基准测试数据必须明确来源。历史基线数据注明为 `HISTORICAL LOCAL COMPOSITE`，完整社区模型实测数据独立标注（包含本地 synthetic 基准、captured llmprobe 重放及长上下文复测），严格区分测试协议与数据性质。
