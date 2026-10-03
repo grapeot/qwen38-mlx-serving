@@ -148,7 +148,7 @@ def plot(input_path: Path, output_path: Path) -> dict:
         axis.set_ylim(bottom=0)
         axis.grid(alpha=.2)
     protocol = summary["protocol"]
-    figure.suptitle(f"{summary['model']} | {summary['revision'][:12]}\nT={protocol['temperature']}, output={protocol['output_tokens']}, cold cache | local synthetic workload")
+    figure.suptitle(f"{summary['model']} | {summary['revision'][:12]}\nT={protocol['temperature']}, output={protocol['output_tokens']}, cold cache | {protocol.get('prompt', summary['tool']).split(' corpus')[0]}")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_path, dpi=180)
     plt.close(figure)

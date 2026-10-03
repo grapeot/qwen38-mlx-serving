@@ -21,7 +21,7 @@ def parser() -> argparse.ArgumentParser:
         if name in ["install-engine", "download"]:
             child.add_argument("--plan", action="store_true")
         if name == "download":
-            child.add_argument("--transport", choices=["hf", "http"], default="hf")
+            child.add_argument("--transport", choices=["hf", "http", "aria2"], default="hf")
         if name == "start":
             child.add_argument("--cold-cache", action="store_true")
         if name == "benchmark":
@@ -58,7 +58,7 @@ def run(args) -> dict:
     if args.action == "install-engine":
         return core.install_engine(settings, args.plan)
     if args.action == "download":
-        return core.download_plan(settings) if args.plan else core.download(settings, args.transport)
+        return core.download_plan(settings, args.transport) if args.plan else core.download(settings, args.transport)
     if args.action == "verify":
         return core.verify(settings)
     if args.action == "start":

@@ -53,8 +53,15 @@ class WrapperTests(unittest.TestCase):
     def test_plan_uses_no_network_and_creates_no_directory(self):
         with patch("urllib.request.urlopen", side_effect=AssertionError("Network called")), patch("subprocess.run", side_effect=AssertionError("Command called")):
             result = core.download_plan(self.settings)
+            for transport in ["http", "aria2"]:
+                alternate = core.download_plan(self.settings, transport)
+                self.assertEqual(alternate["transport"], transport)
+                self.assertNotIn("hf_command", alternate)
+                self.assertIn(self.manifest["revision"], alternate["source_url_template"])
+                self.assertFalse(alternate["network_used"])
             engine = core.install_engine(self.settings, plan=True)
         self.assertFalse(self.settings.data.exists())
+        self.assertFalse(self.settings.state.exists())
         self.assertFalse(result["network_used"])
         self.assertFalse(engine["network_used"])
         self.assertIn(self.manifest["revision"], result["hf_command"])
@@ -207,6 +214,59 @@ class WrapperTests(unittest.TestCase):
         self.assertEqual(result["client_prefill_tok_s"], 100)
         self.assertEqual(result["client_decode_tok_s"], 4)
         self.assertEqual(result["text"], "abcdefgh")
+
+    def test_aria2_download_pins_urls_hashes_and_verifies_after_transport(self):
+        self.settings.model_manifest["files"] = [self.entry(b"weights")]
+        self.settings.model_manifest["total_bytes"] = 7
+        with patch.object(core, "managed_pid", return_value=None), patch("shutil.which", return_value="/bin/aria2c"), patch("subprocess.run") as command, patch.object(core, "verify", side_effect=RuntimeError("bad hash")):
+            with self.assertRaisesRegex(RuntimeError, "bad hash"):
+                core.download(self.settings, "aria2")
+        inputs = (self.settings.state / "downloads/aria2-input.txt").read_text()
+        self.assertIn("/resolve/" + self.manifest["revision"] + "/sample.bin", inputs)
+        self.assertIn("checksum=sha-256=" + hashlib.sha256(b"weights").hexdigest(), inputs)
+        self.assertIn("--auto-file-renaming=false", command.call_args.args[0])
+        self.assertTrue(command.call_args.kwargs["check"])
+
+    def test_aria2_reuses_verified_files_without_spawning(self):
+        self.tiny_model()
+        with patch("shutil.which", return_value="/bin/aria2c"), patch("subprocess.run") as command:
+            result = core.download(self.settings, "aria2")
+        command.assert_not_called()
+        self.assertTrue(result["verified"])
+        core.require_verified(self.settings)
+
+    def test_aria2_resumes_partial_files_without_rewriting(self):
+        self.tiny_model()
+        model = self.settings.model / "sample.bin"
+        model.write_bytes(b"mo")
+        control = model.with_name(model.name + ".aria2")
+        control.write_bytes(b"resume-state")
+
+        def complete(argv, **kwargs):
+            self.assertIn("--continue=true", argv)
+            self.assertEqual(model.read_bytes(), b"mo")
+            self.assertEqual(control.read_bytes(), b"resume-state")
+            model.write_bytes(b"model")
+            control.unlink()
+
+        with patch("shutil.which", return_value="/bin/aria2c"), patch("subprocess.run", side_effect=complete):
+            result = core.download(self.settings, "aria2")
+        self.assertTrue(result["verified"])
+        core.require_verified(self.settings)
+
+    def test_aria2_failure_preserves_resume_state_without_verifying(self):
+        self.tiny_model()
+        model = self.settings.model / "sample.bin"
+        model.write_bytes(b"mo")
+        control = model.with_name(model.name + ".aria2")
+        control.write_bytes(b"resume-state")
+        with patch("shutil.which", return_value="/bin/aria2c"), patch("subprocess.run", side_effect=subprocess.CalledProcessError(1, "aria2c")), patch.object(core, "verify") as verify:
+            with self.assertRaises(subprocess.CalledProcessError):
+                core.download(self.settings, "aria2")
+        verify.assert_not_called()
+        self.assertEqual(model.read_bytes(), b"mo")
+        self.assertEqual(control.read_bytes(), b"resume-state")
+        self.assertFalse((self.settings.model / ".qwen38-verified.json").exists())
 
     def test_tool_protocol_roundtrip_uses_matching_call_id(self):
         call = {"role": "assistant", "content": None, "tool_calls": [{"id": "call_test", "type": "function", "function": {"name": "get_weather", "arguments": '{"city":"杭州"}'}}]}
